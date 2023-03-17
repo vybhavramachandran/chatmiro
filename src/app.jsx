@@ -260,7 +260,7 @@ const generateRandomColor = (parentColor) => {
                 validateApiKey(event.target.value);
               }}
               onBlur={() => validateApiKey(apiKey)}
-              disabled={!isEditing}
+              disabled={success && !isEditing}
             />
   
             {isValidApiKey && <div className="status-text">✅ Valid API Key</div>}
@@ -270,7 +270,7 @@ const generateRandomColor = (parentColor) => {
         </form>
         
       )}
-      {/* {!success ? (
+      {!success ? (
         <button
           type="button"
           className="cs1 ce12 button button-primary"
@@ -280,8 +280,8 @@ const generateRandomColor = (parentColor) => {
           Save API Key
         </button>
       ) : (
-        <h2 className="h2">OpenAI Key Saved!</h2>
-      )} */}
+        <span/>
+      )}
       {isEditing && (
         <span class="cs1 ce12">
         <button
