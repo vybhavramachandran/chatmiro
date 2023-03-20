@@ -26,7 +26,7 @@ const App = () => {
     setIsChecked(!isChecked);
   };
   useEffect(() => {
-    console.log(`lastYPos: ${lastYPos}`);
+    //console.log(`lastYPos: ${lastYPos}`);
   }, [lastYPos]);
 
 
@@ -78,7 +78,7 @@ const generateRandomColor = (parentColor) => {
 
   async function createMindMapFromResponse(response) {
     setLastYPos(0);
-    console.log('response', response.root)
+    //console.log('response', response.root)
     if (response && Object.keys(response).length > 0) {
       const rootNodeName = response.root.text;
       const rootNode = await miro.board.createShape({
@@ -98,7 +98,7 @@ const generateRandomColor = (parentColor) => {
       const childNodes = response.root.children;
       if (childNodes) {
         const createChildNodes = async (parentNode, childNodes, isLeft, currentYPos, parentColor,isRoot) => {
-          console.log('currentYPos:', currentYPos);
+          //console.log('currentYPos:', currentYPos);
 
           if (!childNodes) {
             return currentYPos;
@@ -113,7 +113,7 @@ const generateRandomColor = (parentColor) => {
           for (let i = 0; i < childNodeNames.length; i++) {
             const childNodeName = childNodeNames[i];
             const childNodeColor = isRoot ? generateRandomColor() : generateRandomColor(parentColor); // generate random color based on parent color
-            console.log("childNodeName ",childNodes[childNodeName].text);
+            //console.log("childNodeName ",childNodes[childNodeName].text);
             const childNode = await miro.board.createShape({
               shape: 'round_rectangle',
               content: childNodes[childNodeName].text || '',
@@ -173,10 +173,10 @@ const generateRandomColor = (parentColor) => {
   
   React.useEffect(() => {
     const storedApiKey = localStorage.getItem('chatMiroAPIKey');
-    console.log("Retreived key ",storedApiKey);
+    //console.log("Retreived key ",storedApiKey);
     if (storedApiKey) {
       setApiKey(storedApiKey);
-      console.log("Key set ",apiKey);
+      //console.log("Key set ",apiKey);
       setSuccess(true);
     }
   }, []);
@@ -184,7 +184,7 @@ const generateRandomColor = (parentColor) => {
   return (
     <div className="grid wrapper">
       <div className="cs1 ce12">
-        <img src="/src/assets/chatmiro.png" alt="" />
+        <img src="./assets/chatmiro.png" alt="" />
       </div>
       <div className="cs1 ce12">
       <p class="p-large">
