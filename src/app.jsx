@@ -184,7 +184,7 @@ const generateRandomColor = (parentColor) => {
   return (
     <div className="grid wrapper">
       <div className="cs1 ce12">
-        <img src="assets/chatmiro.png" alt="" />
+        <img src="/src/assets/chatmiro.png" alt="" />
       </div>
       <div className="cs1 ce12">
       <p class="p-large">
