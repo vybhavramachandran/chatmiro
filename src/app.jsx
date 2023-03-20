@@ -20,10 +20,16 @@ const App = () => {
   var [userPrompt,setUserPrompt]=useState("")
   var [buttonText,setButtonText]=useState("Generate Mindmap ⚡️")
   var [isDrawingMindMap,setIsDrawingMindMap]=useState(false)
+  const [isChecked, setIsChecked] = useState(false);
 
+  const handleToggle = () => {
+    setIsChecked(!isChecked);
+  };
   useEffect(() => {
     console.log(`lastYPos: ${lastYPos}`);
   }, [lastYPos]);
+
+
 
   function validateApiKey(apiKey) {
     const apiKeyRegex = /^sk-[a-zA-Z0-9]{48}$/;
@@ -229,7 +235,7 @@ const generateRandomColor = (parentColor) => {
           className="cs1 ce12 button button-secondary"
           onClick={async () => {
             setIsDrawingMindMap(true)
-            const mindmapText = await retreiveMindMapFromOpenAI(userPrompt);
+            const mindmapText = await retreiveMindMapFromOpenAI(userPrompt,isChecked);
             await createMindMapFromResponse(JSON.parse(mindmapText));
 
           }}
@@ -237,8 +243,25 @@ const generateRandomColor = (parentColor) => {
           		{!isDrawingMindMap?"Generate Mindmap ⚡️":<FaSpinner className="loadingIcon"/>}
 
         </button>
+      
         </div>
           </div>
+          <div class="cs1 ce12" id="modelToggle">
+
+          <label className="toggle">
+          <input
+        type="checkbox"
+        checked={isChecked}
+        onChange={handleToggle}
+        tabIndex="0"
+      />
+      {
+        isChecked?<span id="boldify">GPT-4</span>:       <span>GPT-4</span>
+
+      }
+      
+          </label>
+            </div>
         </div>
       ) : (
         <form className="cs1 ce12 form-example--main-content">

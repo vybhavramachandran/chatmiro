@@ -74,3 +74,17 @@ img {
     transform: rotate(720deg);
   }
 }
+
+
+#modelToggle{
+  position: fixed;
+  bottom:0;
+  right:0;
+  margin:20px;
+}
+
+
+#boldify{
+  font-weight: bold;
+
+}

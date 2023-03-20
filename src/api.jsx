@@ -11,10 +11,10 @@ const headers = {
 
 
 
-  const retreiveMindMapFromOpenAI = async (prompt) => {
+  const retreiveMindMapFromOpenAI = async (prompt,isChecked) => {
 
     var data = {
-      model: 'gpt-3.5-turbo',
+      model: isChecked?'gpt-4':'gpt-3.5-turbo',
       messages: [{ role: 'user', content: `
       You are an expert in everything and your goal is to help me visually learn a topic. Be as descriptive as possible. Go as broad or deep as needed so that I fully learn a concept.
   
@@ -26,7 +26,7 @@ const headers = {
       1. No other data, except the JSON structured data should be present in the response. All returned response must be inside the JSON.
       2. Don't include any quotes inside the text content
       
-      The PROMPT is "${prompt}". Go atleast 4 levels deep. Try to explain as much as possible.
+      The PROMPT is "Generate a detailed mindmap for ${prompt}". Go atleast 4 levels deep. Try to explain as much as possible.
       
       Here's a sample structure.
       {
