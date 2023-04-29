@@ -4,7 +4,8 @@ import { useState,useEffect } from 'react';
 import { retreiveMindMapFromOpenAI } from './api.jsx';
 import { FaSpinner } from 'react-icons/fa';
 import tinycolor from 'tinycolor2';
-
+import Modal from 'react-modal';
+import { TwitterMentionButton} from "react-twitter-embed";
 
 
 
@@ -21,6 +22,9 @@ const App = () => {
   var [buttonText,setButtonText]=useState("Generate Mindmap ⚡️")
   var [isDrawingMindMap,setIsDrawingMindMap]=useState(false)
   const [isChecked, setIsChecked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  Modal.setAppElement('#root');
 
   const handleToggle = () => {
     setIsChecked(!isChecked);
@@ -29,7 +33,13 @@ const App = () => {
     //console.log(`lastYPos: ${lastYPos}`);
   }, [lastYPos]);
 
-
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  };
+  
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
 
   function validateApiKey(apiKey) {
     const apiKeyRegex = /^sk-[a-zA-Z0-9]{48}$/;
@@ -184,11 +194,11 @@ const generateRandomColor = (parentColor) => {
   return (
     <div className="grid wrapper">
       <div className="cs1 ce12">
-        <img src="/assets/chatmiro.png" alt="" />
+        <img src="/assets/gptmindmap.png" alt="" />
       </div>
       <div className="cs1 ce12">
       <p class="p-large">
-            With ChatMiro, you can create mindmaps using the power of OpenAI's ChatGPT! 🤙
+            With <b>GPT-Mindmap</b>, you can create mindmaps using the power of OpenAI's ChatGPT! <img src="assets/openailogosmall.png" class="openailogosmall"></img>
           </p>
       </div>
       {success && !isEditing ? (
@@ -197,7 +207,8 @@ const generateRandomColor = (parentColor) => {
         
             </div>
           <div class="cs1 ce12">
-            <h3 class="h3" id="headings"> Step 1️⃣ : OpenAI API Key ✅ </h3>
+            <h3 class="h3" id="headings"> Step 1:  <img class="openailogo" src="/assets/openailogo.png" alt="" 
+            /> API Key ✅ </h3>
           </div>
           <span className="cs1 ce10">
             <p className="p-small" id="keyfield">
@@ -215,7 +226,7 @@ const generateRandomColor = (parentColor) => {
           </span>
           {isValidApiKey && <div className="status-text">✅ Valid API Key</div>}
           <div class="cs1 ce12">
-          <h3 class="h3" id="headings">Step 2️⃣: Generate Mindmap</h3>
+          <h3 class="h3" id="headings">Step 2: Generate Mindmap</h3>
           {/* <p class="p-large">
             With ChatMiro, you can create mindmaps using the power of OpenAI's ChatGPT.
           </p> */}
@@ -232,7 +243,7 @@ const generateRandomColor = (parentColor) => {
           <button
           type="button"
           disabled = {!userPrompt || isDrawingMindMap}
-          className="cs1 ce12 button button-secondary"
+          className="cs1 ce12 button button-secondary "
           onClick={async () => {
             setIsDrawingMindMap(true)
             const mindmapText = await retreiveMindMapFromOpenAI(userPrompt,isChecked);
@@ -240,7 +251,7 @@ const generateRandomColor = (parentColor) => {
 
           }}
         >
-          		{!isDrawingMindMap?"Generate Mindmap ⚡️":<FaSpinner className="loadingIcon"/>}
+          		{!isDrawingMindMap?"⚡️ Generate Mindmap ":<FaSpinner className="loadingIcon"/>}
 
         </button>
       
@@ -248,34 +259,67 @@ const generateRandomColor = (parentColor) => {
           </div>
           <div class="cs1 ce12" id="modelToggle">
 
-          <label className="toggle">
-          <input
-        type="checkbox"
-        checked={isChecked}
-        onChange={handleToggle}
-        tabIndex="0"
-      />
-      {
-        isChecked?<span id="boldify">GPT-4</span>:       <span>GPT-4</span>
+            <div>
+            <button class="button-icon button-icon-small icon-comment-feedback" type="button"
+            onClick={handleModalOpen}
+            ></button>
+            <Modal
+              isOpen={isModalOpen}
+              onRequestClose={handleModalClose}
+              className="modal"
+              overlayClassName="modal-overlay"
+            >
+              <p class="p-large">👋🏼 I'm <a decoration="none" href="https://twitter.com/vybhavram">Vybhav</a>! </p>
+              <p class="p-medium">I'm a visual thinker, so I built GPT-Mindmap to quickly generate mindmaps to visualize any topic.</p>
+              <p class="p-medium">I'd love to know what you think! </p>
+              
+              <TwitterMentionButton
+    screenName={'vybhavram'}
+    placeholder="loading.."
 
-      }
-      
-          </label>
-            </div>
+  />
+
+              {/* <a class="twitter-mention-button" data-show-count="false" href="https://twitter.com/intent/tweet?screen_name=vybhavram&ref_src=twsrc%5Etfw" >Say Hi!</a> */}
+              <a href="https://gpt-mindmap.xyz" class="website"><p class="p-small">gpt-mindmap.xyz</p></a>
+    </Modal>
+
+            {/* <button class="button-icon button-icon-small icon-comment-feedback" type="button"
+            
+            onClick={()=>{
+
+            }}
+            ></button> */}
+
+      {/* <span class="icon-close"></span> */}
+  </div>
+  <label className="toggle">
+    <input
+      type="checkbox"
+      checked={isChecked}
+      onChange={handleToggle}
+      tabIndex="0"
+    />
+    {
+      isChecked?<span id="boldify">GPT-4</span>:<span>GPT-4</span>
+    }
+  </label>
+</div>
+
         </div>
       ) : (
         <form className="cs1 ce12 form-example--main-content">
           <div className="form-group">
-          <h3 class="h3" id="headings"> {isEditing? "Step 1️⃣ : OpenAI API Key ✏️" :"1️⃣ : OpenAI API Key "} </h3>
+          <h3 class="h3" id="headings"> {isEditing? "Step 1 : OpenAI API Key ✏️" :"1️⃣ : OpenAI API Key "} </h3>
 
             <p className="p-small">
               <a href="https://platform.openai.com/account/api-keys" target="_blank">
                 Get your API key from OpenAI dashboard
               </a>
             </p>
-            <input
-              className="input"
-              type="text"
+            <textarea
+
+              className="textarea key"
+              // type="text"
               placeholder="Enter your API key"
               value={apiKey}
               onChange={(event) => {
@@ -334,7 +378,9 @@ const generateRandomColor = (parentColor) => {
         </button>
         </span>
       )}
+      
     </div>
+    
   );
   
 };

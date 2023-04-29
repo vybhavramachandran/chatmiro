@@ -58,7 +58,9 @@ img {
 }
 
 #buttonclass{
-  text-align: right;
+  text-align: start;
+  align-items: center;
+  margin-top: 30px;
 }
 
 .loadingIcon{
@@ -78,13 +80,80 @@ img {
 
 #modelToggle{
   position: fixed;
+  width:100%;
   bottom:0;
   right:0;
-  margin:20px;
+  padding:20px;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 
 #boldify{
   font-weight: bold;
 
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 600px;
+  background-color: white;
+  padding: 1em;
+  border-radius: 4px;
+  outline: none;
+}
+
+.toggle{
+  margin:0;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+a {
+  text-decoration: none;
+  text-decoration-color: #EA215A;
+  text-decoration-thickness: .125em;
+  text-underline-offset: 1.5px;
+  font-weight: bold;
+}
+
+.openailogo{
+  height:1.2em;
+  vertical-align: middle;
+}
+
+.special{
+  text-align: start;
+}
+
+.openailogosmall{
+  height:1em;
+}
+
+.website{
+  text-decoration: none;
+}
+
+.key{
+  padding: 0;
+  height:100px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  /* letter-spacing: 0.05em; */
+  word-break: break-all;
+  white-space: pre-wrap;
 }
