@@ -18,7 +18,6 @@ const headers = {
   try {
     const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers });
     //console.log(response.data);
-    return response.data.choices[0].message.content.trim();
   } catch (error) {
     console.error(error);
     throw error;
