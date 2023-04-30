@@ -11,11 +11,11 @@ const headers = {
   };
   
 
-  async function checkGPT4Access() {
+  async function checkGPT4Access(apiKey) {
     try {
       const response = await axios.get('https://api.openai.com/v1/models/gpt-4', {
         headers: {
-          'Authorization': `Bearer ${API_KEY}`,
+          'Authorization': `Bearer ${apiKey}`,
         },
       });
   
