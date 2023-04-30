@@ -11,29 +11,28 @@ const headers = {
   };
   
 
-  async function checkGPT4Access() {
-    console.log("Check GPT4 Access called");
+  async function checkGPT4Access(apiKey) {
     try {
       const response = await axios.get('https://api.openai.com/v1/models/gpt-4', {
         headers: {
-          'Authorization': `Bearer ${API_KEY}`,
+          'Authorization': `Bearer ${apiKey}`,
         },
       });
   
       if (response.data.id === 'gpt-4') {
+        console.log('You have access to GPT-4');
         return true;
-      } else if (response.data.error && response.data.error.code === 'model_not_found') {
-        return false;
-      } else {
-        console.error('Unexpected response:', response.data);
-        throw new Error('Unexpected response');
       }
     } catch (error) {
-      console.error('Error checking GPT-4 access:', error);
-      throw error;
+      if (error.response && error.response.data && error.response.data.error && error.response.data.error.code === 'model_not_found') {
+        console.log('You do not have access to GPT-4');
+        return false;
+      } else {
+        console.error('Error checking GPT-4 access:', error);
+        throw error;
+      }
     }
   }
-  
 
   const retreiveMindMapFromOpenAI = async (prompt,isChecked) => {
     cancelTokenSource = axios.CancelToken.source();
