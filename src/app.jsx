@@ -390,9 +390,10 @@ const generateRandomColor = (parentColor) => {
 
       {/* <span class="icon-close"></span> */}
   </div>
-  {gpt4access && <label className="toggle">
+ <label className="toggle">
     <input
       type="checkbox"
+      disabled={!gpt4access}
       checked={isChecked}
       onChange={handleToggle}
       tabIndex="0"
@@ -400,7 +401,7 @@ const generateRandomColor = (parentColor) => {
     {
       isChecked?<span id="boldify">GPT-4</span>:<span>GPT-4</span>
     }
-  </label>}
+  </label>
 </div>
 
         </div>
