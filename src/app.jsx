@@ -349,6 +349,7 @@ const generateRandomColor = (parentColor) => {
                     localStorage.setItem("chatMiroAPIKey", apiKey.trim());
                     setSuccess(true);
                     setSettingModalOpen(false);
+                    setgpt4access(checkGPT4Access());
                   }}
                 >
                    💾 Save
