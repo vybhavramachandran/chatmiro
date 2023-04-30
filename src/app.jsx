@@ -231,19 +231,14 @@ const generateRandomColor = (parentColor) => {
   
   React.useEffect(() => {
     const storedApiKey = localStorage.getItem('chatMiroAPIKey');
+    setgpt4access(checkGPT4Access());
     //console.log("Retreived key ",storedApiKey);
     if (storedApiKey) {
       setApiKey(storedApiKey);
       //console.log("Key set ",apiKey);
       setSuccess(true);
     }
-    if (checkGPT4Access){
-      console.log("GPT 4 access enabled")
-      setgpt4access(true);
-    }
-    else{
-      setgpt4access(false);
-    }
+  
   }, []);
 
   return (
