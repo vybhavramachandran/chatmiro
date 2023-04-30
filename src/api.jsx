@@ -3,29 +3,40 @@ import axios from 'axios';
 const API_BASE_URL = 'https://api.openai.com/v1/';
 const API_KEY = localStorage.getItem('chatMiroAPIKey');
 
+let cancelTokenSource; // To store the axios cancel token source
+
 const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${API_KEY}`
   };
   
 
-  const testGPT4access = async () =>{
-    var data = {
-      model: 'gpt-4',
-      messages: [{ role: 'user', content: `test`}]
-  } 
+  async function checkGPT4Access() {
+    console.log("Check GPT4 Access called");
+    try {
+      const response = await axios.get('https://api.openai.com/v1/models/gpt-4', {
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`,
+        },
+      });
   
-  try {
-    const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers });
-    //console.log(response.data);
-  } catch (error) {
-    console.error(error);
-    throw error;
+      if (response.data.id === 'gpt-4') {
+        return true;
+      } else if (response.data.error && response.data.error.code === 'model_not_found') {
+        return false;
+      } else {
+        console.error('Unexpected response:', response.data);
+        throw new Error('Unexpected response');
+      }
+    } catch (error) {
+      console.error('Error checking GPT-4 access:', error);
+      throw error;
+    }
   }
-}
-
+  
 
   const retreiveMindMapFromOpenAI = async (prompt,isChecked) => {
+    cancelTokenSource = axios.CancelToken.source();
 
     var data = {
       model: isChecked?'gpt-4':'gpt-3.5-turbo',
@@ -89,13 +100,36 @@ const headers = {
     };
   
     try {
-      const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers });
+      const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        data,
+        {
+          headers,
+          cancelToken: cancelTokenSource.token, // Add the cancel token
+        }
+      );
+      cancelTokenSource = null;
+
       //console.log(response.data);
       return response.data.choices[0].message.content.trim();
     } catch (error) {
-      console.error(error);
-      throw error;
+      if (axios.isCancel(error)) {
+        console.log('Request canceled');
+      }
+      else{
+        console.error(error);
+        throw error;
+      }
+      
     }
   };
 
-export { retreiveMindMapFromOpenAI };
+
+const cancelRequest =()=> {
+  if (cancelTokenSource) {
+    cancelTokenSource.cancel('Request canceled by the user');
+  }
+}
+
+
+export { retreiveMindMapFromOpenAI, cancelRequest, checkGPT4Access};

@@ -1,11 +1,10 @@
 import * as React from 'react';
 import {createRoot} from 'react-dom/client';
 import { useState,useEffect } from 'react';
-import { retreiveMindMapFromOpenAI } from './api.jsx';
+import { retreiveMindMapFromOpenAI,cancelRequest,checkGPT4Access} from './api.jsx';
 import { FaSpinner } from 'react-icons/fa';
 import tinycolor from 'tinycolor2';
 import Modal from 'react-modal';
-import Settings from './settings.jsx';
 import { TwitterMentionButton} from "react-twitter-embed";
 import {
   BrowserRouter as Router,
@@ -18,9 +17,42 @@ import {
 
 const App = () => {
 
+  const settingsCode= ()=>{
+    <div className="grid wrapper">
+    <div className="cs1 ce12">
+      <h3 className="h3" id="headings">
+        Step 1:{' '}
+        <img className="openailogo" src="/assets/openailogo.png" alt="" /> API Key ✅
+      </h3>
+    </div>
+    <span className="cs1 ce10">
+      <p className="p-small" id="keyfield">
+        sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      </p>
+    </span>
+    <span className="cs11 ce12">
+      <button
+        className="button button-secondary button-small"
+        type="button"
+        onClick={() => {
+          setIsEditing(true);
+        }}
+      >
+        ✏️
+      </button>
+    </span>
+    {isValidApiKey && <div className="status-text">✅ Valid API Key</div>}
+    {/* Add a back button */}
+    <button className="button button-primary" type="button" onClick={handleBackButtonClick}>
+      Go Back
+    </button>
+  </div>
+  }
+
   const [apiKey, setApiKey] = useState('');
   const [isValidApiKey, setIsValidApiKey] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [gpt4access,setgpt4access] = useState(false);
   const [error, setError] = useState(false);
   const [isEditing, setIsEditing] = useState(false)
   var [lastYPos, setLastYPos] = useState(0)
@@ -49,9 +81,12 @@ const App = () => {
   };
   const handleSettingModalOpen = () => {
     setSettingModalOpen(true);
+    setIsEditing(false);
+
   };
   const handleSettingModalClose = () => {
     setSettingModalOpen(false);
+    setIsEditing(false);
   };
 
   function validateApiKey(apiKey) {
@@ -202,10 +237,16 @@ const generateRandomColor = (parentColor) => {
       //console.log("Key set ",apiKey);
       setSuccess(true);
     }
+    if (checkGPT4Access){
+      console.log("GPT 4 access enabled")
+      setgpt4access(true);
+    }
+    else{
+      setgpt4access(false);
+    }
   }, []);
 
   return (
-<BrowserRouter>
     <div className="grid wrapper">
       <div className="cs1 ce12">
         <img src="/assets/gptmindmap.png" alt="" />
@@ -233,8 +274,16 @@ const generateRandomColor = (parentColor) => {
   type="text" placeholder="What would you like to know about?" id="example-1"/>
 </div>
 <div class="cs1 ce12" id="buttonclass">
+  {isDrawingMindMap && <button type="button" id="buttonclass" className="cs1 ce6 button button-secondary"
+  onClick={()=>{
+    setIsDrawingMindMap(false);
+    cancelRequest();
+    }}>
+    Cancel
+  </button>}
           <button
           type="button"
+          id="buttonclass"
           disabled = {!userPrompt || isDrawingMindMap}
           className="cs1 ce12 button button-secondary "
           onClick={async () => {
@@ -252,9 +301,9 @@ const generateRandomColor = (parentColor) => {
           </div>
           <div class="cs1 ce12" id="modelToggle">
             <div id="cs1 ce6 leftgroup-modelToggle">
-            <Link to="/settings"><button class="button-icon button-icon-small icon-settings" type="button"
-           
-            ></button></Link>
+          <button class="button-icon button-icon-small icon-settings" type="button"
+           onClick={handleSettingModalOpen}
+            ></button>
 
             
           
@@ -267,18 +316,53 @@ const generateRandomColor = (parentColor) => {
               className="modal"
               overlayClassName="modal-overlay"
             >
-              <p class="p-large">👋🏼 I'm <a decoration="none" href="https://twitter.com/vybhavram">Vybhav</a>! </p>
-              <p class="p-medium">I'm a visual thinker, so I built GPT-Mindmap to quickly generate mindmaps to visualize any topic.</p>
-              <p class="p-medium">I'd love to know what you think! </p>
-              
-              <TwitterMentionButton
-    screenName={'vybhavram'}
-    placeholder="loading.."
+              <h2 class="h2">Settings</h2>
+              <div className="grid wrapper">
+              <div className="cs1 ce12">
+              <h4 className="h4" id="headings">
+                OpenAI API Key :
+                <textarea
+                class="textarea"
+                value={apiKey}
+                onChange={(event) => {
+                  setApiKey(event.target.value);
+                  validateApiKey(event.target.value);
+                }}
+                onBlur={() => validateApiKey(apiKey)}
+                id="textarea-example"></textarea>
+                <div className="cs1 ce12" id="settingsModalButtons">
+                <button
+                  className="button button-secondary button-small"
+                  type="button"
+                  id="buttonclass"
+                  onClick={() => {
+                    
+                    handleSettingModalClose()
+                  }}
+                >
+                  Cancel
+                </button>
+                
+                <button
+                  className="button button-secondary button-small"
+                  type="button"
+                  id="buttonclass"
+                  disabled={!isValidApiKey}
+                  onClick={() => {
+                    setIsEditing(false);
+                    setIsValidApiKey(false);
+                    localStorage.setItem("chatMiroAPIKey", apiKey.trim());
+                    setSuccess(true);
+                    setSettingModalOpen(false);
+                  }}
+                >
+                   💾 Save
+                </button>
+                </div>
+                
+                </h4>
+                </div></div>
 
-  />
-
-              {/* <a class="twitter-mention-button" data-show-count="false" href="https://twitter.com/intent/tweet?screen_name=vybhavram&ref_src=twsrc%5Etfw" >Say Hi!</a> */}
-              {/* <a href="https://gpt-mindmap.xyz" class="website"><p class="p-small">gpt-mindmap.xyz</p></a> */}
     </Modal>
           
             <Modal
@@ -310,7 +394,7 @@ const generateRandomColor = (parentColor) => {
 
       {/* <span class="icon-close"></span> */}
   </div>
-  <label className="toggle">
+  {gpt4access && <label className="toggle">
     <input
       type="checkbox"
       checked={isChecked}
@@ -320,7 +404,7 @@ const generateRandomColor = (parentColor) => {
     {
       isChecked?<span id="boldify">GPT-4</span>:<span>GPT-4</span>
     }
-  </label>
+  </label>}
 </div>
 
         </div>
@@ -398,10 +482,7 @@ const generateRandomColor = (parentColor) => {
       )}
       
     </div>
-          <Routes>
-    <Route path="/settings" element={<Settings/>}>
-        </Route></Routes>
-    </BrowserRouter>
+        
   
   );
   
