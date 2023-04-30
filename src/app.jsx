@@ -395,9 +395,11 @@ const generateRandomColor = (parentColor) => {
  <label className="toggle">
     <input
       type="checkbox"
-      disabled={!gpt4access}
       checked={isChecked}
       onChange={handleToggle}
+      {...(gpt4access ? {} : { disabled: true })}
+
+
       tabIndex="0"
     />
     {
