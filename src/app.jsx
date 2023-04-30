@@ -235,7 +235,7 @@ const generateRandomColor = (parentColor) => {
     //console.log("Retreived key ",storedApiKey);
     if (storedApiKey) {
       setApiKey(storedApiKey);
-      setgpt4access(checkGPT4Access(apiKey));
+      setgpt4access(checkGPT4Access(storedApiKey));
 
       //console.log("Key set ",apiKey);
       setSuccess(true);
