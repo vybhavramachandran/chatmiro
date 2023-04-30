@@ -77,6 +77,10 @@ img {
   }
 }
 
+#leftgroup-modelToggle{
+  display:flex;
+}
+
 
 #modelToggle{
   position: fixed;

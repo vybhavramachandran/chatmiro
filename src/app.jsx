@@ -5,9 +5,15 @@ import { retreiveMindMapFromOpenAI } from './api.jsx';
 import { FaSpinner } from 'react-icons/fa';
 import tinycolor from 'tinycolor2';
 import Modal from 'react-modal';
+import Settings from './settings.jsx';
 import { TwitterMentionButton} from "react-twitter-embed";
-
-
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  BrowserRouter
+} from "react-router-dom";
 
 
 const App = () => {
@@ -23,6 +29,7 @@ const App = () => {
   var [isDrawingMindMap,setIsDrawingMindMap]=useState(false)
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettingModalOpen, setSettingModalOpen] = useState(false);
 
   Modal.setAppElement('#root');
 
@@ -39,6 +46,12 @@ const App = () => {
   
   const handleModalClose = () => {
     setIsModalOpen(false);
+  };
+  const handleSettingModalOpen = () => {
+    setSettingModalOpen(true);
+  };
+  const handleSettingModalClose = () => {
+    setSettingModalOpen(false);
   };
 
   function validateApiKey(apiKey) {
@@ -192,6 +205,7 @@ const generateRandomColor = (parentColor) => {
   }, []);
 
   return (
+<BrowserRouter>
     <div className="grid wrapper">
       <div className="cs1 ce12">
         <img src="/assets/gptmindmap.png" alt="" />
@@ -201,38 +215,17 @@ const generateRandomColor = (parentColor) => {
             With <b>GPT-Mindmap</b>, you can create mindmaps using the power of OpenAI's ChatGPT! <img src="assets/openailogosmall.png" class="openailogosmall"></img>
           </p>
       </div>
-      {success && !isEditing ? (
+      {success ? (
         <div class="cs1 ce12 grid">
           <div class="cs1 ce12">
         
             </div>
+         
           <div class="cs1 ce12">
-            <h3 class="h3" id="headings"> Step 1:  <img class="openailogo" src="/assets/openailogo.png" alt="" 
-            /> API Key ✅ </h3>
-          </div>
-          <span className="cs1 ce10">
-            <p className="p-small" id="keyfield">
-            sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            </p>
-          </span>
-          <span className="cs11 ce12">
-            <button
-              class="button button-secondary button-small"
-              type="button"
-              onClick={() => setIsEditing(true)}
-            >
-              ✏️
-            </button>
-          </span>
-          {isValidApiKey && <div className="status-text">✅ Valid API Key</div>}
-          <div class="cs1 ce12">
-          <h3 class="h3" id="headings">Step 2: Generate Mindmap</h3>
-          {/* <p class="p-large">
-            With ChatMiro, you can create mindmaps using the power of OpenAI's ChatGPT.
-          </p> */}
+          <h3 class="h3" id="headings">What would you like to learn about?</h3>
           <div class="form-group">
-	<label for="example-1">What would you like to know about?</label>
-	<input class="input" 
+	<textarea
+		class="textarea"
    value={userPrompt}
    onChange={(event) => {
      setUserPrompt(event.target.value);
@@ -258,11 +251,36 @@ const generateRandomColor = (parentColor) => {
         </div>
           </div>
           <div class="cs1 ce12" id="modelToggle">
+            <div id="cs1 ce6 leftgroup-modelToggle">
+            <Link to="/settings"><button class="button-icon button-icon-small icon-settings" type="button"
+           
+            ></button></Link>
 
-            <div>
+            
+          
             <button class="button-icon button-icon-small icon-comment-feedback" type="button"
             onClick={handleModalOpen}
             ></button>
+             <Modal
+              isOpen={isSettingModalOpen}
+              onRequestClose={handleSettingModalClose}
+              className="modal"
+              overlayClassName="modal-overlay"
+            >
+              <p class="p-large">👋🏼 I'm <a decoration="none" href="https://twitter.com/vybhavram">Vybhav</a>! </p>
+              <p class="p-medium">I'm a visual thinker, so I built GPT-Mindmap to quickly generate mindmaps to visualize any topic.</p>
+              <p class="p-medium">I'd love to know what you think! </p>
+              
+              <TwitterMentionButton
+    screenName={'vybhavram'}
+    placeholder="loading.."
+
+  />
+
+              {/* <a class="twitter-mention-button" data-show-count="false" href="https://twitter.com/intent/tweet?screen_name=vybhavram&ref_src=twsrc%5Etfw" >Say Hi!</a> */}
+              {/* <a href="https://gpt-mindmap.xyz" class="website"><p class="p-small">gpt-mindmap.xyz</p></a> */}
+    </Modal>
+          
             <Modal
               isOpen={isModalOpen}
               onRequestClose={handleModalClose}
@@ -280,7 +298,7 @@ const generateRandomColor = (parentColor) => {
   />
 
               {/* <a class="twitter-mention-button" data-show-count="false" href="https://twitter.com/intent/tweet?screen_name=vybhavram&ref_src=twsrc%5Etfw" >Say Hi!</a> */}
-              <a href="https://gpt-mindmap.xyz" class="website"><p class="p-small">gpt-mindmap.xyz</p></a>
+              {/* <a href="https://gpt-mindmap.xyz" class="website"><p class="p-small">gpt-mindmap.xyz</p></a> */}
     </Modal>
 
             {/* <button class="button-icon button-icon-small icon-comment-feedback" type="button"
@@ -380,7 +398,11 @@ const generateRandomColor = (parentColor) => {
       )}
       
     </div>
-    
+          <Routes>
+    <Route path="/settings" element={<Settings/>}>
+        </Route></Routes>
+    </BrowserRouter>
+  
   );
   
 };
